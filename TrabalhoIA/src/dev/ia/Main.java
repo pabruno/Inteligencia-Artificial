@@ -24,7 +24,7 @@ public class Main {
 			mapChar[path.get(i).getxPosition()][path.get(i).getyPosition()] = 'I';
 			mapChar[path.get(i).getPrevious().getxPosition()][path.get(i).getPrevious().getyPosition()] = 'P';
 			game.printmap(mapChar,path.get(i).getValueMovement());
-			while((int)System.currentTimeMillis() - tempo > 300);
+			while((int)System.currentTimeMillis() - tempo < 200);
 			tempo = (int)System.currentTimeMillis();
 		}
 	}
