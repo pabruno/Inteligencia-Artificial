@@ -17,7 +17,7 @@ public class Main {
 		Map<ExampleNode> myMap = new Map<ExampleNode>(41, 41, new ExampleNode(), mapChar);
 		List<ExampleNode> path = myMap.findPath(36, 4, 36, 36);
 
-		Game game = new Game("IA Chapeuzinho Vermelho", 900, 800);
+		Game game = new Game("IA Chapeuzinho Vermelho", 950, 900);
 
 		tempo = (int)System.currentTimeMillis();
 		for(int i = 0; i < path.size(); i++) {
