@@ -62,7 +62,7 @@ public class Main {
 		List<ExampleNode> path = myMap.findPath(36, 4, 36, 36);
 
 		Game game = new Game("IA Chapeuzinho Vermelho", 950, 900);
-		int sumapreciation;
+		double sumapreciation;
 		int numClareira = 0;
 		tempo = (int)System.currentTimeMillis();
 		for(int i = 0; i < path.size(); i++) {
@@ -94,7 +94,6 @@ public class Main {
 			else {
 				mapChar[path.get(i).getxPosition()][path.get(i).getyPosition()] = 'I';
 				mapChar[path.get(i).getPrevious().getxPosition()][path.get(i).getPrevious().getyPosition()] = 'P';
-				System.out.println(path.get(i).getValueMovement());
 				game.printmap(mapChar,path.get(i).getValueMovement());
 			}
 			while((int)System.currentTimeMillis() - tempo < 200);

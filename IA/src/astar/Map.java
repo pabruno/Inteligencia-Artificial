@@ -1,85 +1,23 @@
-/*    
-    Copyright (C) 2012 http://software-talk.org/ (developer@software-talk.org)
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
- * // TODO
- * possible optimizations:
- * - calculate f as soon as g or h are set, so it will not have to be
- *      calculated each time it is retrieved
- * - store nodes in openList sorted by their f value.
- */
-
 package astar;
 
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * This class represents a simple map.
- * <p>
- * It's width as well as height can be set up on construction. The map can
- * represent nodes that are walkable or not, it can be printed to sto, and it
- * can calculate the shortest path between two nodes avoiding walkable nodes.
- * <p>
- * <p>
- * Usage of this package: Create a node class which extends AbstractNode and
- * implements the sethCosts method. Create a NodeFactory that implements the
- * NodeFactory interface. Create Map instance with those created classes.
- * 
- * @see ExampleUsage ExampleUsage
- *      <p>
- *
- * @see AbstractNode
- * @see NodeFactory
- * @version 1.0
- * @param <T>
- */
 public class Map<T extends AbstractNode> {
 
-	/**
-	 * weather or not it is possible to walk diagonally on the map in general.
-	 */
-	protected static boolean CANMOVEDIAGONALY = true;
-
-	/** holds nodes. first dim represents x-, second y-axis. */
+	/** Matriz com os nós. */
 	private T[][] nodes;
 
-	/** value that each nodes have */
+	/** Matriz com os valores dos nós (caracteres) */
 	private char[][] valueNodes;
 
-	/** width + 1 is size of first dimension of nodes. */
 	protected int width;
-	/** height + 1 is size of second dimension of nodes. */
 	protected int height;
 
-	/** a Factory to create instances of specified nodes. */
 	private ExampleNode exampleNode;
 
-	/**
-	 * constructs a squared map with given width and height.
-	 * <p>
-	 * The nodes will be instantiated through the given nodeFactory.
-	 *
-	 * @param width
-	 * @param higth
-	 * @param nodeFactory
-	 */
+	
 	public Map(int width, int height, ExampleNode exampleNode, char[][] valueNodes) {
-		// TODO check parameters. width and height should be > 0.
 		this.exampleNode = exampleNode;
 		nodes = (T[][]) new AbstractNode[width][height];
 		this.width = width - 1;
@@ -89,7 +27,7 @@ public class Map<T extends AbstractNode> {
 	}
 
 	/**
-	 * initializes all nodes. Their coordinates will be set correctly.
+	 * Inicia a matriz de nós.
 	 */
 	private void initEmptyNodes() {
 		for (int i = 0; i <= width; i++) {
@@ -101,116 +39,41 @@ public class Map<T extends AbstractNode> {
 	}
 
 	/**
-	 * sets nodes walkable field at given coordinates to given value.
-	 * <p>
-	 * x/y must be bigger or equal to 0 and smaller or equal to width/height.
-	 *
-	 * @param x
-	 * @param y
-	 * @param bool
-	 */
-	public void setWalkable(int x, int y, boolean bool) {
-		// TODO check parameter.
-		nodes[x][y].setWalkable(bool);
-	}
-
-	/**
-	 * returns node at given coordinates.
-	 * <p>
-	 * x/y must be bigger or equal to 0 and smaller or equal to width/height.
-	 *
-	 * @param x
-	 * @param y
-	 * @return node
+	 * Retorna o nó da posição (x,y).
 	 */
 	public final T getNode(int x, int y) {
-		// TODO check parameter.
 		return nodes[x][y];
 	}
 
-	/**
-	 * prints map to sto. Feel free to override this method.
-	 * <p>
-	 * a player will be represented as "o", an unwalkable terrain as "#".
-	 * Movement penalty will not be displayed.
-	 */
-	public void drawMap() {
-		for (int i = 0; i <= width; i++) {
-			print("_"); // boarder of map
-		}
-		print("\n");
+	
 
-		for (int j = 0; j <= height; j++) {
-			print("|"); // boarder of map
-			for (int i = 0; i <= width; i++) {
-				if (nodes[i][j].isWalkable()) {
-					print("A");
-				} else {
-					print("#"); // draw unwalkable
-				}
-			}
-			print("|\n"); // boarder of map
-		}
+	/* Variáveis para o algoritmo A* */
 
-		for (int i = 0; i <= width; i++) {
-			print("_"); // boarder of map
-		}
-	}
-
-	/**
-	 * prints something to sto.
-	 */
-	private void print(String s) {
-		System.out.print(s);
-	}
-
-	/* Variables and methods for path finding */
-
-	// variables needed for path finding
-
-	/** list containing nodes not visited but adjacent to visited nodes. */
+	/** Lista dos nós ainda não visitados. */
 	private List<T> openList;
-	/** list containing nodes already visited/taken care of. */
+	
+	/** Nós já visitados. */
 	private List<T> closedList;
-	/** done finding path? */
+	
 	private boolean done = false;
 
 	/**
-	 * finds an allowed path from start to goal coordinates on this map.
-	 * <p>
-	 * This method uses the A* algorithm. The hCosts value is calculated in the
-	 * given Node implementation.
-	 * <p>
-	 * This method will return a LinkedList containing the start node at the
-	 * beginning followed by the calculated shortest allowed path ending with
-	 * the end node.
-	 * <p>
-	 * If no allowed path exists, an empty list will be returned.
-	 * <p>
-	 * <p>
-	 * x/y must be bigger or equal to 0 and smaller or equal to width/height.
-	 *
-	 * @param oldX
-	 * @param oldY
-	 * @param newX
-	 * @param newY
-	 * @return
+	 * Algoritmo A*
+	 * 
 	 */
 	public final List<T> findPath(int oldX, int oldY, int newX, int newY) {
-		// TODO check input
 		openList = new LinkedList<T>();
 		closedList = new LinkedList<T>();
-		openList.add(nodes[oldX][oldY]); // add starting node to open list
+		openList.add(nodes[oldX][oldY]); // adiciona o nó inicial à lista dos ainda não visitados.
 		int clareiraValor = 160;
 		int clareira = 1;
 
 		done = false;
 		T current;
 		while (!done) {
-			current = lowestFInOpen(); // get node with lowest fCosts from
-										// openList
-			closedList.add(current); // add current node to closed list
-			openList.remove(current); // delete current node from open list
+			current = lowestFInOpen(); // pega o nó de menor custo da lista dos ainda não visitados.
+			closedList.add(current); // adiciona o nó corrente à lista dos nós visitados.
+			openList.remove(current); // remove o nó corrente da lista dos ainda não visitados.
 
 			if (valueNodes[current.getxPosition()][current.getyPosition()] == 'C') {
 
@@ -225,58 +88,40 @@ public class Map<T extends AbstractNode> {
 				nodes[current.getxPosition()][current.getyPosition()].setValueMovement(clareiraValor);
 			}
 
-			if ((current.getxPosition() == newX) && (current.getyPosition() == newY)) { // found
-																						// goal
+			if ((current.getxPosition() == newX) && (current.getyPosition() == newY)) { // achou o caminho.
 				return calcPath(nodes[oldX][oldY], current);
 			}
 
-			// for all adjacent nodes:
+			// Nós adjacentes ao nó corrente:
 			List<T> adjacentNodes = getAdjacent(current);
 			for (int i = 0; i < adjacentNodes.size(); i++) {
 				T currentAdj = adjacentNodes.get(i);
-				if (!openList.contains(currentAdj)) { // node is not in openList
-					currentAdj.setPrevious(current); // set current node as
-														// previous for this
-														// node
-					currentAdj.sethCosts(nodes[newX][newY]); // set h costs of
-																// this node
-																// (estimated
-																// costs to
-																// goal)
-					currentAdj.setgCosts(current); // set g costs of this node
-													// (costs from start to this
-													// node)
-					openList.add(currentAdj); // add node to openList
-				} else { // node is in openList
+				if (!openList.contains(currentAdj)) { // nó adjacente não está na lista.
+					currentAdj.setPrevious(current); // nó corrente é antecessor ao seu adjacente.
+					currentAdj.sethCosts(nodes[newX][newY]); // calcula a heurística do nó até o final.
+					currentAdj.setgCosts(current); // calcula o custo do nó inicial até o nó adjacente.
+					openList.add(currentAdj);
+				} else { // nó adjacente já está na lista.
 					if (currentAdj.getgCosts() > currentAdj.calculategCosts(current)) {
-						currentAdj.setPrevious(current); // set current node as
-															// previous for this
-															// node
-						currentAdj.setgCosts(current); // set g costs of this
-														// node (costs from
-														// start to this node)
+						currentAdj.setPrevious(current); // se o custo já calculado do início até este nó adjacente for maior
+														 // que o atual, então troca o nó antecessor.
+						currentAdj.setgCosts(current);
 					}
 				}
 			}
 
-			if (openList.isEmpty()) { // no path exists
-				return new LinkedList<T>(); // return empty list
+			if (openList.isEmpty()) {
+				return new LinkedList<T>();
 			}
 		}
-		return null; // unreachable
+		return null;
 	}
 
 	/**
-	 * calculates the found path between two points according to their given
-	 * <code>previousNode</code> field.
-	 *
-	 * @param start
-	 * @param goal
-	 * @return
+	 * Retorna a lista com o caminho do início até o fim.
+	 * 
 	 */
 	private List<T> calcPath(T start, T goal) {
-		// TODO if invalid nodes are given (eg cannot find from
-		// goal to start, this method will result in an infinite loop!)
 		LinkedList<T> path = new LinkedList<T>();
 
 		T curr = goal;
@@ -293,12 +138,9 @@ public class Map<T extends AbstractNode> {
 	}
 
 	/**
-	 * returns the node with the lowest fCosts.
-	 *
-	 * @return
+	 * Função que retorna o nó com menor custo total (Calculado + Heurística) da lista dos nós ainda não visitados.
 	 */
 	private T lowestFInOpen() {
-		// TODO currently, this is done by going through the whole openList!
 		T cheapest = openList.get(0);
 		for (int i = 0; i < openList.size(); i++) {
 			if (openList.get(i).getfCosts() < cheapest.getfCosts()) {
@@ -309,11 +151,9 @@ public class Map<T extends AbstractNode> {
 	}
 
 	/**
-	 * returns a LinkedList with nodes adjacent to the given node. if those
-	 * exist, are walkable and are not already in the closedList!
+	 * Retorna uma lista com os nós adjacentes ao nó desejado.
 	 */
 	private List<T> getAdjacent(T node) {
-		// TODO make loop
 		int x = node.getxPosition();
 		int y = node.getyPosition();
 		List<T> adj = new LinkedList<T>();

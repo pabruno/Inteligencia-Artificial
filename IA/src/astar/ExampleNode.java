@@ -1,9 +1,6 @@
 package astar;
 
-/**
- * A simple Example implementation of a Node only overriding the sethCosts
- * method; uses Manhattan method.
- */
+
 public class ExampleNode extends AbstractNode {
 
 	public ExampleNode(int xPosition, int yPosition, char letter) {
