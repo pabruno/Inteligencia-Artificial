@@ -22,7 +22,7 @@ public class Main {
         //tamanho da população
         int tamPop = 1000;
         //numero máximo de gerações
-        int numMaxGeracoes = 1000;
+        int numMaxGeracoes = 100;
 
         //define o número de genes do indivíduo baseado na solução
         int qtdclareira = 10;
