@@ -126,7 +126,7 @@ turn([Xf,Yf]) :-
 	retractall(agent_orientation(_)),
 	assert(agent_orientation([New_X,New_Y])),
 	agent_score(S),
-	New_S is (S - 3),
+	New_S is (S - 1),
 	retractall(agent_score(_)),
 	assert(agent_score(New_S)),
 	!.
@@ -155,7 +155,7 @@ turn([Xf,Yf]) :-
 	retractall(agent_orientation(_)),
 	assert(agent_orientation([New_X,New_Y])),
 	agent_score(S),
-	New_S is (S - 2),
+	New_S is (S - 1),
 	retractall(agent_score(_)),
 	assert(agent_score(New_S)),
 	!.	
