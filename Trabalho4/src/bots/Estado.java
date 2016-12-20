@@ -1,0 +1,11 @@
+package bots;
+
+public enum Estado {
+	PERC_NOTHING,
+	PERC_BLOCKED,
+	PERC_INIMIGO,
+	PERC_STEPS,
+	PERC_PERIGO,
+	PERC_POWERUP,
+	PERC_PREMIO
+}
